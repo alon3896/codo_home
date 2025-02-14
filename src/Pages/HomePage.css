@@ -1,0 +1,26 @@
+body {
+    background-image: url('../assets/BG.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.page{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
+    height: 10%;
+    width: 100%;
+ 
+    opacity: 1;
+    border-radius: 60px;
+}
