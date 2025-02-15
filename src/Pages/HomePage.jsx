@@ -15,6 +15,7 @@ const HomePage = () => {
     const storedClickedDots = localStorage.getItem("clickedDots");
     return storedClickedDots ? JSON.parse(storedClickedDots) : [];
   });
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -39,6 +40,20 @@ const HomePage = () => {
     // Save clicked dots to local storage whenever clickedDots changes
     localStorage.setItem("clickedDots", JSON.stringify(clickedDots));
   }, [clickedDots]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newScale = Math.max(0.6, Math.min(1, window.innerWidth / 1920));
+      setScale(newScale);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initial call to set the scale
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleChange = async (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -65,15 +80,7 @@ const HomePage = () => {
   };
 
   const handleDotClick = (id) => {
-    setClickedDots((prevClickedDots) => {
-      if (prevClickedDots.includes(id)) {
-        // If dot is already clicked, remove it from the array
-        return prevClickedDots.filter((dotId) => dotId !== id);
-      } else {
-        // If dot is not clicked, add it to the array
-        return [...prevClickedDots, id];
-      }
-    });
+    setClickedDots([id]); // Set the clicked dot, clearing any previous selections
   };
 
   const positions = homeData ? calculatePositions(homeData) : [];
@@ -85,7 +92,7 @@ const HomePage = () => {
           value={selectedOption}
           onChange={handleChange}
           options={options}
-          placeholder="Select a user..."
+          placeholder="בחר משתמש"
         />
       </div>
 
@@ -97,6 +104,8 @@ const HomePage = () => {
               startY={pos.y}
               endX={positions[index + 1].x}
               endY={positions[index + 1].y}
+              isOpen={homeData && homeData[index + 1].isOpen} // Pass isOpen to Rectangle
+              scale={scale}
             />
           )}
           <Dot
@@ -106,6 +115,7 @@ const HomePage = () => {
             isClicked={clickedDots.includes(index)}
             onClick={() => handleDotClick(index)}
             isOpen={homeData && homeData[index].isOpen}
+            scale={scale}
           />
         </React.Fragment>
       ))}
