@@ -1,6 +1,7 @@
-import React from "react";
-
+import React, { useState } from "react";
 const Dot = ({ x, y, id, isClicked, onClick, isOpen, scale }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const dotStyle = {
     background:
       isOpen && isClicked
@@ -21,8 +22,29 @@ const Dot = ({ x, y, id, isClicked, onClick, isOpen, scale }) => {
     cursor: isOpen ? "pointer" : "default",
     opacity: isOpen ? 1 : 0.4,
   };
+  const tooltipStyle = {
+    top: "-78px", // Adjust position above the dot
+    textAlign: "right",
+    position: "absolute",
+    backgroundColor: "rgba(255, 255, 255, 1)",
+    color: "black",
+    padding: "10px",
+    borderRadius: "5px",
+    fontSize: "24px",
+    visibility: isHovered ? "visible" : "hidden",
+    whiteSpace: "nowrap",
+  };
 
-  return <div className="dot" style={dotStyle} onClick={onClick}></div>;
+  return (
+    <div
+      style={dotStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      <div style={tooltipStyle}>{id}</div>
+    </div>
+  );
 };
 
 export default Dot;

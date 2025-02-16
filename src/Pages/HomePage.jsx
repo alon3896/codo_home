@@ -10,8 +10,8 @@ const HomePage = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [options, setOptions] = useState([]);
   const [homeData, setHomeData] = useState(null);
+  const [error, setError] = useState(false);
   const [clickedDots, setClickedDots] = useState(() => {
-    // Load clicked dots from local storage on initial render
     const storedClickedDots = localStorage.getItem("clickedDots");
     return storedClickedDots ? JSON.parse(storedClickedDots) : [];
   });
@@ -21,6 +21,8 @@ const HomePage = () => {
     const fetchUsers = async () => {
       try {
         const users = await getUsers();
+        const dummyUser = { id: 1, name: "משתמש לא קיים לבדיקה" };
+        users.push(dummyUser);
         console.log("Fetched users:", users); // Debugging log
         const userOptions = users.map((user) => ({
           value: user.id,
@@ -59,7 +61,13 @@ const HomePage = () => {
     setSelectedOption(selectedOption);
     try {
       const homeData = await getHome(selectedOption.value);
+      if (!homeData) {
+        setError(true);
+      } else {
+        setError(false);
+      }
       setHomeData(homeData);
+
       console.log("Fetched home data:", homeData); // Debugging log
     } catch (error) {
       console.error("Error fetching home data:", error);
@@ -95,7 +103,7 @@ const HomePage = () => {
           placeholder="בחר משתמש"
         />
       </div>
-
+      {error && <div className="error">{"אין מידע על המשתמש"}</div>}
       {positions.map((pos, index) => (
         <React.Fragment key={index}>
           {index < positions.length - 1 && (
@@ -111,7 +119,7 @@ const HomePage = () => {
           <Dot
             x={pos.x}
             y={pos.y}
-            id={index} // Use index as a unique identifier
+            id={homeData[index].name} // Use index as a unique identifier
             isClicked={clickedDots.includes(index)}
             onClick={() => handleDotClick(index)}
             isOpen={homeData && homeData[index].isOpen}
