@@ -23,7 +23,7 @@ const Dot = ({ x, y, id, isClicked, onClick, isOpen, scale }) => {
     opacity: isOpen ? 1 : 0.4,
   };
   const tooltipStyle = {
-    top: "-78px", // Adjust position above the dot
+    top: "-78px",
     textAlign: "right",
     position: "absolute",
     backgroundColor: "rgba(255, 255, 255, 1)",
